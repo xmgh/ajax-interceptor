@@ -1,11 +1,8 @@
 {
-  "name": "Ajax Modifier",
+  "name": "Ajax助手",
   "version": "1.5.7",
-  "description": "To modify ajax responses on any page",
-  "permissions": [
-    "storage",
-    "scripting"
-  ],
+  "description": "Ajax助手",
+  "permissions": ["storage", "scripting"],
   "background": {
     "service_worker": "service_worker.js"
   },
@@ -23,16 +20,11 @@
         "pageScripts/main.js",
         "iframe/index.html"
       ],
-      "matches": [
-        "<all_urls>"
-      ]
+      "matches": ["<all_urls>"]
     }
   ],
   "action": {},
   "content_security_policy": {},
-  "host_permissions": [
-    "http://*/",
-    "https://*/"
-  ],
+  "host_permissions": ["http://*/", "https://*/"],
   "devtools_page": "devtools.html"
 }

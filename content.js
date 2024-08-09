@@ -17,10 +17,10 @@ document.documentElement.appendChild(script)
 script.addEventListener('load', () => {
   chrome.storage.local.get(['ajaxInterceptor_switchOn', 'ajaxInterceptor_rules'], (result) => {
     if (result.hasOwnProperty('ajaxInterceptor_switchOn')) {
-      postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_switchOn', value: result.ajaxInterceptor_switchOn})
+      postMessage({ type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_switchOn', value: result.ajaxInterceptor_switchOn })
     }
     if (result.ajaxInterceptor_rules) {
-      postMessage({type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_rules', value: result.ajaxInterceptor_rules})
+      postMessage({ type: 'ajaxInterceptor', to: 'pageScript', key: 'ajaxInterceptor_rules', value: result.ajaxInterceptor_rules })
     }
   })
 })
@@ -45,7 +45,7 @@ chrome.storage.local.get(['customFunction'], (result) => {
 })
 
 // 只在最顶层页面嵌入iframe
-function insertIframe() {
+function insertIframe () {
   if (window.self === window.top) {
     iframe = document.createElement('iframe')
     iframe.className = "api-interceptor"
@@ -82,23 +82,23 @@ chrome.runtime.onMessage.addListener(msg => {
     if (msg.hasOwnProperty('iframeScriptLoaded')) {
       if (msg.iframeScriptLoaded) iframeLoaded = true
     } else {
-      postMessage({...msg, to: 'pageScript'})
+      postMessage({ ...msg, to: 'pageScript' })
     }
   }
 })
 
 // 接收pageScript传来的信息，转发给iframe
-window.addEventListener("pageScript", function(event) {
+window.addEventListener("pageScript", function (event) {
   if (iframeLoaded || isDevtoolPosition) {
-    chrome.runtime.sendMessage({type: 'ajaxInterceptor', to: 'iframe', ...event.detail})
+    chrome.runtime.sendMessage({ type: 'ajaxInterceptor', to: 'iframe', ...event.detail })
   } else {
     let count = 0
     const checktLoadedInterval = setInterval(() => {
       if (iframeLoaded) {
         clearInterval(checktLoadedInterval)
-        chrome.runtime.sendMessage({type: 'ajaxInterceptor', to: 'iframe', ...event.detail})
+        chrome.runtime.sendMessage({ type: 'ajaxInterceptor', to: 'iframe', ...event.detail })
       }
-      if (count ++ > 500) {
+      if (count++ > 500) {
         clearInterval(checktLoadedInterval)
       }
     }, 10)
@@ -117,8 +117,8 @@ window.addEventListener("pageScript", function(event) {
 // s.innerText = `console.log('test')`
 // document.documentElement.appendChild(s)
 
-chrome.runtime.sendMessage(chrome.runtime.id, {type: 'ajaxInterceptor', to: 'background', contentScriptLoaded: true})
+chrome.runtime.sendMessage(chrome.runtime.id, { type: 'ajaxInterceptor', to: 'background', contentScriptLoaded: true })
 
 if (isDevtoolPosition) {
-  chrome.runtime.sendMessage(chrome.runtime.id, {type: 'ajaxInterceptor', to: 'iframe', contentScriptLoaded: true})
+  chrome.runtime.sendMessage(chrome.runtime.id, { type: 'ajaxInterceptor', to: 'iframe', contentScriptLoaded: true })
 }

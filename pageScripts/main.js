@@ -268,15 +268,15 @@ let ajax_interceptor_qoweifjqon = {
       return await reader.read().then(processData);
     }
 
-    async function readReadableStream(readableStream) {
+    async function readReadableStream (readableStream) {
       const reader = readableStream.getReader();
       let chunks = [];
       let done, value;
 
       while ({
-          done,
-          value
-        } = await reader.read(), !done) {
+        done,
+        value
+      } = await reader.read(), !done) {
         chunks.push(value);
       }
 
@@ -294,12 +294,12 @@ let ajax_interceptor_qoweifjqon = {
     }
 
 
-    function createReadableStream(text) {
+    function createReadableStream (text) {
       const encoder = new TextEncoder();
       const encodedText = encoder.encode(text);
 
       const readableStream = new ReadableStream({
-        start(controller) {
+        start (controller) {
           controller.enqueue(encodedText);
           controller.close();
         }
@@ -400,7 +400,7 @@ let ajax_interceptor_qoweifjqon = {
           }
         } else if (overrideResponseFunc && isExpert) {
           // 专业模式，用函数替换
-          const queryParams = ajax_interceptor_qoweifjqon.getRequestParams(requestUrl)
+          const queryParams = ajax_interceptor_qoweifjqon.getRequestParams(requestUrl.url || requestUrl)
           const orgResponse = await getOriginalResponse(response.body);
           const funcArgs = {
             method: data?.method,
@@ -428,7 +428,7 @@ let ajax_interceptor_qoweifjqon = {
         }
         txt = overrideResponse !== undefined ? overrideResponse : response.responseText
         const stream = new ReadableStream({
-          start(controller) {
+          start (controller) {
             // const bufView = new Uint8Array(new ArrayBuffer(txt.length))
             // for (var i = 0 i < txt.length i++) {
             //   bufView[i] = txt.charCodeAt(i)
@@ -482,9 +482,10 @@ window.addEventListener("message", function (event) {
   if (ajax_interceptor_qoweifjqon.settings.ajaxInterceptor_switchOn) {
     // https://github.com/YGYOOO/ajax-interceptor/issues/78
     // https://github.com/YGYOOO/ajax-interceptor/issues/93
-    for (const k in ajax_tools_space.originalXHR) {
-      ajax_tools_space.myXHR[k] = ajax_tools_space.originalXHR[k]
-    }
+    // for (const k in ajax_interceptor_qoweifjqon.originalXHR) {
+    //   ajax_interceptor_qoweifjqon.myXHR[k] = ajax_interceptor_qoweifjqon.originalXHR[k]
+    // }
+    ajax_interceptor_qoweifjqon.myXHR.prototype = ajax_interceptor_qoweifjqon.originalXHR.prototype
     window.XMLHttpRequest = ajax_interceptor_qoweifjqon.myXHR
     window.fetch = ajax_interceptor_qoweifjqon.myFetch
   } else {
